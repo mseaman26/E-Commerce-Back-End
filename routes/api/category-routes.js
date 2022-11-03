@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const { where } = require('sequelize/types');
 const { Category, Product } = require('../../models');
 
 // The `/api/categories` endpoint
@@ -7,9 +6,9 @@ const { Category, Product } = require('../../models');
 router.get('/', async (req, res) => {
   // find all categories
   // be sure to include its associated Products
-  try{
+  try {
     const categories = await Category.findAll({
-      
+      include: [{ model: Product }],
     })
     if(!categories){
       res.status(404).json({ message: "no categories found" })
