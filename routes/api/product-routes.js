@@ -32,9 +32,15 @@ router.get('/:id', async (req, res) => {
       include: [{model: Category}, {model: Tag}],
     })
     if(!requestedProduct){
-      res.status(400).json({message: "product"})
+      res.status(400).json({message: "product not found"})
+      return
     }
+    res.status(200).json(requestedProduct)
   }
+  catch(err){
+    res.status(500).json(err)
+  }
+  
   
 });
 
