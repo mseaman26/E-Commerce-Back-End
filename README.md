@@ -1,7 +1,7 @@
 
   ## Description
 
-This app is a functioning database for an e-commerce company.  The database contains three tables of data: Products, Categories, and Tags.  The three different tables have relations to each other.  A category has many products, and a product belongs to one category.  A product has many tags, and a tag has many products.  With these relationships established along with the ability to view, create, update, and delete anything from the data, the database is very versitile and could be used for a variety of companies
+This app creates a functioning database for an e-commerce company.  The database contains three tables of data: Products, Categories, and Tags.  There is a fourth table that serves as a “lookup” table to establish a relationship between Tags and Products. The three different tables have certain relationships to each other.  A category has many products, and a product belongs to one category.  A product has many tags, and a tag has many products.  With these relationships established along with the ability to view, create, update, and delete anything from the data, the database is very versatile and could be used for a variety of companies
 
   [![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
 
@@ -26,81 +26,56 @@ This app is a functioning database for an e-commerce company.  The database cont
   - Javascript
   - Node.JS
   - Express.JS
- 
-  
+  - Insomnia
+  - Dotenv
+  - Express 
   ## Notable Features
-  - User can add and change the data stored in the SQL database
-  - Program runs indefinitely, allowing the user to perform as many actions as they want
+  - A versatile database with relational mapping
+  - Allows user to view, create, update, and delete various kinds of data and the relationships remain intact throughout
 
   ## Notable Methods
-  - Creating and using databases and tables in SQL
-  - Creating a connection to the .sql files with MYSQL and performing queries to manipulate the data in those files
-  - Populating the SQL tables with a seed file
-  - Using "JOIN" methods to create custom tables with SQL data
-  - Utilizing the setTimeout function to work around synchrony issues with inquirer
+  - Writing routes for all the different kinds of data manipulation
+  - Using Model objects to define the SQL tables and the behavior of each column
+  - Using Sequelize associations to create relationships between our data tables
+  - Using modularized seed files to seed the data
+  - Using Insomnia to test our routes
 
 
  ## Code Snippets
- Here we have en example of nesting setTimeout functionality in order to deal with the timing issues of inquirer.  I wanted certain tables to be displayed above certain questions to allow the user to see the options that they are choosing from.  I would probably go with a list prompt next time and populate the choices with string literals
+    Here are our Sequelize associations.  They are vital when it comes to building the behavior of the data tables
 ```javascript
-function updateEmployeeRole(){
-    let empID
-    let role
-    viewAllEmployees()
-        setTimeout(() =>{
-            inquirer.prompt([
-                {
-                    type: "number",
-                    name: "employeeId",
-                    message: "Above is a list of employees.  Which employee's role would you like to update? (Enter the ID number only)"
-                }
-              
-            ])
-            .then((data) =>{
-                empID = data.employeeId
-                viewAllRoles()
-                setTimeout(() => {
-                    inquirer.prompt([
-                        {
-                            type: "number",
-                            name: "newRole",
-                            message: "above is a list of roles.  Select the ID of the employee's new role"
-                        }
-                    ])
-                    .then((data) =>{
-                        role = data.newRole
-                        db.query(`UPDATE employees SET role_id = ${role} WHERE id = ${empID};`, function (err, results){
-                            if(err){
-                                console.log(err)
-                            }else{
-                                console.log("")
-                                console.log(`role has been updated!`)
-                                console.log("")
-                                mainMenu()
-                            }
-                            
-                        })
-                    })
-                }, 400)
-            })
-            }, 200)
-}
+    // Products belongsTo Category
+Product.belongsTo(Category, {foreignKey: "category_id", onDelete: 'CASCADE'});
+// Categories have many Products
+Category.hasMany(Product, {foreignKey: "category_id"});
+// Products belongToMany Tags (through ProductTag)
+Product.belongsToMany(Tag, {through: ProductTag, foreignKey: "product_id",});
+// // Tags belongToMany Products (through ProductTag)
+Tag.belongsToMany(Product, {through: ProductTag, foreignKey: "tag_id"});
 ```
-Here we have a complex database query involving multiple JOINs and aliases.  This was the hardest part of the project
+Here is an example of a route.  This particular route is for update a tag, referencing it by its ID number
 ```javascript
-function viewAllEmployees(exectuteCB=false){
-    db.query(`SELECT employees.id, employees.first_name, employees.last_name, role.title AS title, role.salary AS salary, department.name AS department, CONCAT (manager.first_name, " ", manager.last_name) AS manager FROM employees LEFT JOIN role ON employees.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employees manager ON employees.manager_id = manager.id`, function (err, results){
-        console.log("")
-        console.table(results)
-        if(exectuteCB == true){
-            updateEmployeeRole()
-        }
+    router.put('/:id', async (req, res) => {
+  // update a tag's name by its `id` value
+  try {
+    const updatedTag = Tag.update({
+      tag_name: req.body.tag_name
+    },
+    {
+      where:{
+        id: req.params.id
+      }
     })
-}
+    res.status(200).json({message: "tag has been updated!"})
+  }
+  catch (err){
+    res.status(400).json(err)
+  }
+});
 ```
  ## Installation
 
-   To install this program, navigate to the root folder in your terminal.  Then run the command: npm init, followed by the command: npm install. Then navigate into the "db" folder and sign into mysql shell with the command: mysql -u root -p.  Then, to populate the data tables, run the command: source schema.sql, followed by the command: source seeds.sql. Then navigate back to the root folder and run node index.js and the program should begin in the terminal!
+   To install this program, navigate to the root folder of the project in your terminal.  Then run the command: npm init, followed by the command: npm install. Then navigate into the "db" folder and sign into mysql shell with the command: mysql -u root -p.  Then, load the database, run the command: source schema.sql. Then navigate back to the root folder and enter the command: npm run seed. Now that the database is seeded with data, run the command: node server.js.  Once the server is up and running, interact with the routes using the program Insomnia
 
     
   ## How to Contribute to This Repository:
@@ -117,6 +92,7 @@ function viewAllEmployees(exectuteCB=false){
   <a href="MSeaman26@gmail.com">MSeaman26@gmail.com</a>.  
   To see more of my work, please visit:
   <a href="https://github.com/MSeaman26">My Github Page</a>
+
 
 
 
