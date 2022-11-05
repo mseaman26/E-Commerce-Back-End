@@ -1,7 +1,7 @@
 
   ## Description
 
-This app creates a functioning database for an e-commerce company.  The database contains three tables of data: Products, Categories, and Tags.  There is a fourth table that serves as a “lookup” table to establish a relationship between Tags and Products. The three different tables have certain relationships to each other.  A category has many products, and a product belongs to one category.  A product has many tags, and a tag has many products.  With these relationships established along with the ability to view, create, update, and delete anything from the data, the database is very versatile and could be used for a variety of companies
+This app creates a functioning database for an e-commerce company.  The database contains three tables of data: Products, Categories, and Tags.  There is a fourth table that serves as a “lookup” table to establish a relationship between Tags and Products. The three different tables have certain relationships to each other.  A category has many products, and a product belongs to one category.  A product has many tags, and a tag has many products.  With these relationships established along with the ability to view, create, update, and delete anything from the data, the database is very versatile and could be used for a variety of companies.  This project involved starter-code, made by the coding bootcamp that I am attending.  The starter code was flawed and caused bugs, but ultimately the program works
 
   [![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
 
